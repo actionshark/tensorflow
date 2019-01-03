@@ -1,6 +1,9 @@
 import neural
 import scanner
 import tensorflow as tf
+import time
+
+t0 = time.time()
 
 input_path = "input.txt"
 output_path = "output.txt"
@@ -46,7 +49,7 @@ for i in range(layer_num - 1):
 	temp_data = addLayer(i, temp_data, neural_old.layers[i], af)
 	
 loss = tf.reduce_mean(tf.reduce_sum(tf.square(output_data - temp_data)))
-opti = tf.train.GradientDescentOptimizer(0.1)
+opti = tf.train.GradientDescentOptimizer(0.3)
 train = opti.minimize(loss)
 
 sess = tf.Session()
@@ -78,28 +81,31 @@ while input_scan.hasNextFloat():
 	feed_dict = {input_data: inputs, output_data: outputs}
 	sess.run(train, feed_dict=feed_dict)
 	
-	neural_file = open(neural_path, "w")
-	neural_file.write("{:d}\n".format(layer_num))
+neural_file = open(neural_path, "w")
+neural_file.write("{:d}\n".format(layer_num))
+
+for size in layer_size:
+	neural_file.write("{:d} ".format(size))
+neural_file.write("\n\n")
+
+for i in range(layer_num - 1):
+	layer = neural_new.layers[i]
+	weight = sess.run(layer.weight)
+	base = sess.run(layer.base)
 	
-	for size in layer_size:
-		neural_file.write("{:d} ".format(size))
-	neural_file.write("\n\n")
+	for row in weight:
+		for value in row:
+			neural_file.write("{:.4f} ".format(value))
+		neural_file.write("\n")
+	neural_file.write("\n")
 	
-	for i in range(layer_num - 1):
-		layer = neural_new.layers[i]
-		weight = sess.run(layer.weight)
-		base = sess.run(layer.base)
-		
-		for row in weight:
-			for value in row:
-				neural_file.write("{:.4f} ".format(value))
-			neural_file.write("\n")
+	for row in base:
+		for value in row:
+			neural_file.write("{:.4f} ".format(value))
 		neural_file.write("\n")
-		
-		for row in base:
-			for value in row:
-				neural_file.write("{:.4f} ".format(value))
-			neural_file.write("\n")
-		neural_file.write("\n")
-		
-	neural_file.close()
+	neural_file.write("\n")
+	
+neural_file.close()
+
+t1 = time.time() - t0
+print("cost time : ", t1)
