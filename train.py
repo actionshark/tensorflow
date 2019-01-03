@@ -63,28 +63,20 @@ count = 0
 
 while input_scan.hasNextFloat():
 	count += 1
-	print("---------------------------------------------")
-	print("train", count, "\n")
+	print("train {0}".format(count))
 
 	inputs = [[]]
 	for col in range(input_size):
 		value = input_scan.nextFloat()
 		inputs[0].append(value)
 		
-	print("input", inputs, "\n")
-		
 	outputs = [[]]
 	for col in range(output_size):
 		value = output_scan.nextFloat()
 		outputs[0].append(value)
 		
-	print("output", outputs, "\n")
-		
 	feed_dict = {input_data: inputs, output_data: outputs}
 	sess.run(train, feed_dict=feed_dict)
-	
-	result = sess.run(temp_data, feed_dict=feed_dict)
-	print("temp_data", result, "\n")
 	
 	neural_file = open(neural_path, "w")
 	neural_file.write("{:d}\n".format(layer_num))
