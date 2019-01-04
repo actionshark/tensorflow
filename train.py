@@ -48,7 +48,7 @@ for i in range(layer_num - 1):
 	af = tf.nn.tanh
 	temp_data = addLayer(i, temp_data, neural_old.layers[i], af)
 	
-loss = tf.reduce_mean(tf.reduce_sum(tf.square(output_data - temp_data)))
+loss = tf.reduce_mean((tf.square(output_data - temp_data)))
 opti = tf.train.GradientDescentOptimizer(0.3)
 train = opti.minimize(loss)
 
@@ -95,13 +95,13 @@ for i in range(layer_num - 1):
 	
 	for row in weight:
 		for value in row:
-			neural_file.write("{:.4f} ".format(value))
+			neural_file.write("{:.6f} ".format(value))
 		neural_file.write("\n")
 	neural_file.write("\n")
 	
 	for row in base:
 		for value in row:
-			neural_file.write("{:.4f} ".format(value))
+			neural_file.write("{:.6f} ".format(value))
 		neural_file.write("\n")
 	neural_file.write("\n")
 	

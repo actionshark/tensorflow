@@ -1,3 +1,4 @@
+import math
 import scanner
 
 class Layer:
@@ -24,12 +25,21 @@ class Layer:
 			text += "{0} : {1}\n".format(key, self.__dict__[key])
 			
 		return text
+		
+###############################################################################
+		
+def tanh(x):
+	temp = math.exp(-2 * x)
+	return (1 - temp) / (1 + temp)
+	
+###############################################################################
 
 class Neural:
 	def __init__(self):
 		self.layer_num = 0
 		self.layer_size = []
 		self.layers = []
+		self.af = tanh
 		
 	def init(self, layer_size):
 		self.layer_num = len(layer_size)
@@ -93,6 +103,28 @@ class Neural:
 			file.write("\n")
 				
 		file.close()
+		
+	def calc(self, inputs):
+		for i in range(self.layer_num - 1):
+			layer = self.layers[i]
+			in_size = self.layer_size[i]
+			out_size = self.layer_size[i + 1]
+			
+			outputs = []
+			for col in range(out_size):
+				outputs.append(0)
+					
+			for col in range(out_size):
+				for i in range(in_size):
+					outputs[col] += inputs[i] * layer.weight[i][col]
+						
+			for col in range(out_size):
+				outputs[col] += layer.base[0][col]
+				outputs[col] = self.af(outputs[col])
+				
+			inputs = outputs
+
+		return inputs
 			
 	def toString(self):
 		text = ""

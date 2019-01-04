@@ -1,3 +1,4 @@
+import math_util
 import random
 
 input_path = "input.txt"
@@ -6,20 +7,26 @@ output_path = "output.txt"
 input_file = open(input_path, "w")
 output_file = open(output_path, "w")
 
-for i in range(100):
-	array = []
+for _ in range(30000):
+	a = random.randint(0, 15)
+	b = random.randint(0, 15)
 
-	for i in range(4):
-		value = random.random()
-		array.append(value)
+	for v in math_util.int2bs(a, 4):
+		input_file.write("{:d} ".format(v))
 		
-		input_file.write("{:.4f} ".format(value))
+	for v in math_util.int2bs(b, 4):
+		input_file.write("{:d} ".format(v))
 		
 	input_file.write("\n")
-		
-	array.sort()
+
+	c = a * b
 	
-	output_file.write("{:.4f} ".format(array[0]))	
+	for v in math_util.int2bs(c, 8):
+		output_file.write("{:d} ".format(v))
+		
 	output_file.write("\n")
+	
+input_file.close()
+output_file.close()
 
 print("finished")
